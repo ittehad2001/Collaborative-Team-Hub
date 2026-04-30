@@ -1,0 +1,36 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "build": "echo 'No build step for api'",
+    "lint": "echo 'No linter configured'",
+    "test": "jest --runInBand",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "latest",
+    "cloudinary": "latest",
+    "cookie-parser": "latest",
+    "cors": "latest",
+    "csv-stringify": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "multer": "latest",
+    "socket.io": "latest",
+    "supertest": "latest",
+    "swagger-ui-express": "latest",
+    "yamljs": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "jest": "latest",
+    "prisma": "^5.22.0"
+  }
+}

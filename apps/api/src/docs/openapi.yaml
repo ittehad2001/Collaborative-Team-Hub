@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+  title: Team Hub API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000
+paths:
+  /:
+    get:
+      summary: API metadata
+      responses:
+        "200":
+          description: Metadata response
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /api/auth/register:
+    post:
+      summary: Register account
+      responses:
+        "201":
+          description: Created
+  /api/auth/login:
+    post:
+      summary: Login account
+      responses:
+        "200":
+          description: Logged in
+  /api/workspaces:
+    get:
+      summary: List member workspaces
+      responses:
+        "200":
+          description: Workspace list
+    post:
+      summary: Create workspace
+      responses:
+        "201":
+          description: Workspace created
+  /api/workspaces/{workspaceId}/goals:
+    get:
+      summary: List goals for workspace
+      responses:
+        "200":
+          description: Goal list
+    post:
+      summary: Create goal
+      responses:
+        "201":
+          description: Goal created
+  /api/workspaces/{workspaceId}/announcements:
+    get:
+      summary: List announcements for workspace
+      responses:
+        "200":
+          description: Announcement list
+    post:
+      summary: Create rich text announcement
+      responses:
+        "201":
+          description: Announcement created
+  /api/notifications:
+    get:
+      summary: Current user notifications
+      responses:
+        "200":
+          description: Notification list
