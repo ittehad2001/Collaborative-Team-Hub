@@ -19,6 +19,25 @@ async function request(path, options = {}) {
   return res.json();
 }
 
+async function requestNoJson(path, options = {}) {
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const res = await fetch(`${API}${path}`, {
+    ...options,
+    credentials: "include",
+    headers: {
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...(options.headers || {})
+    }
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ message: "Request failed" }));
+    throw new Error(error.message || "Request failed");
+  }
+
+  return res;
+}
+
 export const api = {
   register: (data) => request("/api/auth/register", { method: "POST", body: JSON.stringify(data) }),
   login: (data) => request("/api/auth/login", { method: "POST", body: JSON.stringify(data) }),
@@ -28,6 +47,7 @@ export const api = {
   uploadAvatar: (formData) => request("/api/profile/avatar", { method: "POST", body: formData }),
   workspaces: () => request("/api/workspaces"),
   createWorkspace: (data) => request("/api/workspaces", { method: "POST", body: JSON.stringify(data) }),
+  workspaceMembers: (workspaceId) => request(`/api/workspaces/${workspaceId}/members`),
   inviteMember: (workspaceId, email, role) => request(`/api/workspaces/${workspaceId}/invite`, { method: "POST", body: JSON.stringify({ email, role }) }),
   goals: (workspaceId) => request(`/api/workspaces/${workspaceId}/goals`),
   createGoal: (workspaceId, data) => request(`/api/workspaces/${workspaceId}/goals`, { method: "POST", body: JSON.stringify(data) }),
@@ -44,6 +64,7 @@ export const api = {
   createItem: (workspaceId, data) => request(`/api/workspaces/${workspaceId}/items`, { method: "POST", body: JSON.stringify(data) }),
   updateItem: (workspaceId, itemId, data) => request(`/api/workspaces/${workspaceId}/items/${itemId}`, { method: "PATCH", body: JSON.stringify(data) }),
   analytics: (workspaceId) => request(`/api/workspaces/${workspaceId}/analytics/dashboard`),
+  exportCsv: (workspaceId) => requestNoJson(`/api/workspaces/${workspaceId}/analytics/export`),
   notifications: () => request("/api/notifications"),
   readNotification: (notificationId) => request(`/api/notifications/${notificationId}/read`, { method: "PATCH" })
 };

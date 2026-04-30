@@ -42,4 +42,25 @@ async function inviteMember(req, res) {
   res.json(membership);
 }
 
-module.exports = { listWorkspaces, createWorkspace, inviteMember };
+async function listMembers(req, res) {
+  const { workspaceId } = req.params;
+  const members = await prisma.workspaceMembership.findMany({
+    where: { workspaceId },
+    include: {
+      user: {
+        select: { id: true, name: true, email: true, avatarUrl: true }
+      }
+    }
+  });
+  res.json(
+    members.map((m) => ({
+      id: m.user.id,
+      name: m.user.name,
+      email: m.user.email,
+      avatarUrl: m.user.avatarUrl,
+      role: m.role
+    }))
+  );
+}
+
+module.exports = { listWorkspaces, createWorkspace, inviteMember, listMembers };

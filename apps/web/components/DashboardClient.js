@@ -22,6 +22,7 @@ export default function DashboardClient() {
   const [goals, setGoals] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [items, setItems] = useState([]);
+  const [members, setMembers] = useState([]);
   const [online, setOnline] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState("");
@@ -30,18 +31,20 @@ export default function DashboardClient() {
 
   async function loadAll(id) {
     try {
-      const [a, g, an, it, ntf] = await Promise.all([
+      const [a, g, an, it, ntf, mbr] = await Promise.all([
         api.analytics(id),
         api.goals(id),
         api.announcements(id),
         api.items(id),
-        api.notifications()
+        api.notifications(),
+        api.workspaceMembers(id)
       ]);
       setAnalytics(a);
       setGoals(g);
       setAnnouncements(an);
       setItems(it);
       setNotifications(ntf);
+      setMembers(mbr);
       setError("");
     } catch (e) {
       setError(e.message);
@@ -106,10 +109,12 @@ export default function DashboardClient() {
 
   async function reactAnnouncement(announcementId, emoji) {
     try {
-      await api.reactAnnouncement(workspaceId, announcementId, emoji);
+      const result = await api.reactAnnouncement(workspaceId, announcementId, emoji);
       await loadAll(workspaceId);
+      return { ok: true, message: result.action === "removed" ? "Reaction removed." : "Reaction added." };
     } catch (e) {
       setError(e.message);
+      return { ok: false, message: e.message };
     }
   }
 
@@ -117,8 +122,21 @@ export default function DashboardClient() {
     try {
       await api.commentAnnouncement(workspaceId, announcementId, content);
       await loadAll(workspaceId);
+      return { ok: true };
     } catch (e) {
       setError(e.message);
+      return { ok: false, message: e.message };
+    }
+  }
+
+  async function pinAnnouncement(announcementId, pinned) {
+    try {
+      await api.pinAnnouncement(workspaceId, announcementId, pinned);
+      await loadAll(workspaceId);
+      return { ok: true, message: pinned ? "Announcement pinned." : "Announcement unpinned." };
+    } catch (e) {
+      setError(e.message);
+      return { ok: false, message: e.message };
     }
   }
 
@@ -198,6 +216,24 @@ export default function DashboardClient() {
     }
   }
 
+  async function exportWorkspaceCsv() {
+    if (!workspaceId) return;
+    try {
+      const res = await api.exportCsv(workspaceId);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "workspace-items.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-6">
       <header className="glass flex flex-wrap items-center justify-between gap-4 rounded-2xl p-5 shadow-sm">
@@ -207,6 +243,9 @@ export default function DashboardClient() {
         </div>
         <div className="flex items-center gap-2">
           <ProfileAvatarUpload />
+          <button className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition hover:bg-slate-50" onClick={exportWorkspaceCsv}>
+            Export CSV
+          </button>
           <select className="rounded-xl border border-slate-200 bg-white px-3 py-2" value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)}>
             {workspaces.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
           </select>
@@ -250,14 +289,18 @@ export default function DashboardClient() {
             />
             <AnnouncementsPanel
               announcements={announcements}
+              members={members}
               onCreate={createAnnouncementOptimistic}
               onReact={reactAnnouncement}
               onComment={commentAnnouncement}
+              onPinToggle={pinAnnouncement}
             />
           </div>
 
           <ActionItemsPanel
             items={items}
+            members={members}
+            goals={goals}
             onCreate={createItemOptimistic}
             onStatus={updateItemStatusOptimistic}
           />

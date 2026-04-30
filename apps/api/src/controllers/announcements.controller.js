@@ -44,19 +44,26 @@ async function react(req, res) {
   const { announcementId } = req.params;
   const { emoji } = req.body;
 
-  const reaction = await prisma.reaction.upsert({
+  const existing = await prisma.reaction.findUnique({
     where: {
       announcementId_userId_emoji: {
         announcementId,
         userId: req.user.id,
         emoji
       }
-    },
-    create: { announcementId, userId: req.user.id, emoji },
-    update: {}
+    }
   });
 
-  res.json(reaction);
+  if (existing) {
+    await prisma.reaction.delete({ where: { id: existing.id } });
+    return res.json({ action: "removed", emoji });
+  }
+
+  const reaction = await prisma.reaction.create({
+    data: { announcementId, userId: req.user.id, emoji }
+  });
+
+  return res.json({ action: "added", reaction });
 }
 
 async function comment(req, res) {
