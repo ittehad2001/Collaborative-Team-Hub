@@ -1,11 +1,23 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+html.light,
+:root {
+  --bg-main: #f8fafc;
+  --text-main: #0f172a;
+}
+
+html.dark {
+  --bg-main: #020617;
+  --text-main: #e2e8f0;
+}
 
 body {
   background:
     radial-gradient(1200px 600px at 10% -20%, rgba(59, 130, 246, 0.2), transparent),
     radial-gradient(900px 500px at 100% 0%, rgba(16, 185, 129, 0.15), transparent),
-    #f8fafc;
-  color: #0f172a;
+    var(--bg-main);
+  color: var(--text-main);
   min-height: 100vh;
 }
 
@@ -20,4 +32,44 @@ body {
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+html.dark .panel,
+html.dark .glass {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.dark .bg-white {
+  background-color: rgba(15, 23, 42, 0.92) !important;
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-300 {
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-600,
+html.dark .text-slate-500,
+html.dark .text-slate-400 {
+  color: #94a3b8 !important;
 }

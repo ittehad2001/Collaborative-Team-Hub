@@ -26,6 +26,11 @@ Monorepo implementation of the internship assignment using **Turborepo**, with:
 - CSV export endpoint for workspace action items
 - Swagger docs at `/api/docs`
 - Backend tests with Jest + Supertest + token utility tests
+- Frontend unit/integration tests with React Testing Library + Jest
+- Dark/light theme with system preference mode
+- Keyboard shortcut command palette (`Ctrl/Cmd+K`) for navigation
+- Email notifications for workspace invites and `@mention` events (SMTP-backed via Nodemailer)
+- PWA support (web manifest + offline service worker shell)
 
 ## Monorepo scripts
 From repo root:
@@ -74,5 +79,5 @@ Set required variables exactly as assignment specifies.
 
 ## Known limitations
 - Rich text editor is lightweight contenteditable (not a full editor framework like TipTap/Slate).
-- Frontend does not yet render threaded comment history beneath announcements.
+- Full collaborative cursor-based editing and robust offline write-sync queue are not implemented.
 - Railway deployment/live URLs and video walkthrough still need to be completed for submission packaging.

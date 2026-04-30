@@ -4,13 +4,13 @@ export default function HomePage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-12">
       <section className="glass w-full rounded-3xl p-8 shadow-xl md:p-12">
-        <p className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700">
+        <p className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-500/20 dark:text-blue-200">
           FredoCloud Team Hub
         </p>
-        <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight text-slate-900 md:text-6xl">
+        <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight text-slate-900 dark:text-slate-100 md:text-6xl">
           Collaborate on goals, announcements and action items in real time.
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-slate-600 md:text-lg">
+        <p className="mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 md:text-lg">
           Built with Next.js, Express, Prisma and Socket.io in a monorepo. Invite your team, track progress, and stay aligned.
         </p>
 
@@ -22,24 +22,24 @@ export default function HomePage() {
             Sign In
           </Link>
           <Link
-            className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
             href="/register"
           >
             Create Account
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-3 text-sm text-slate-600 md:grid-cols-3">
-          <article className="rounded-xl border border-slate-200 bg-white/80 p-4">
-            <p className="font-semibold text-slate-900">Workspace Roles</p>
+        <div className="mt-10 grid grid-cols-1 gap-3 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-3">
+          <article className="rounded-xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/70">
+            <p className="font-semibold text-slate-900 dark:text-slate-100">Workspace Roles</p>
             <p className="mt-1">Admin/Member permissions with invites by email.</p>
           </article>
-          <article className="rounded-xl border border-slate-200 bg-white/80 p-4">
-            <p className="font-semibold text-slate-900">Live Updates</p>
+          <article className="rounded-xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/70">
+            <p className="font-semibold text-slate-900 dark:text-slate-100">Live Updates</p>
             <p className="mt-1">Socket events for goals, announcements and items.</p>
           </article>
-          <article className="rounded-xl border border-slate-200 bg-white/80 p-4">
-            <p className="font-semibold text-slate-900">Analytics</p>
+          <article className="rounded-xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/70">
+            <p className="font-semibold text-slate-900 dark:text-slate-100">Analytics</p>
             <p className="mt-1">Completion insights with chart + CSV export.</p>
           </article>
         </div>

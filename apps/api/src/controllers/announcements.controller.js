@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma");
 const { logAudit } = require("../services/audit");
+const { sendEmail } = require("../services/mailer");
 
 function sanitizeRichText(html) {
   if (!html) return "";
@@ -138,6 +139,16 @@ async function comment(req, res) {
           message: `${req.user.email} mentioned you in a comment`
         }))
       });
+      await Promise.all(
+        targets.map((user) =>
+          sendEmail({
+            to: user.email,
+            subject: "You were mentioned in Team Hub",
+            text: `${req.user.email} mentioned you in a workspace comment: "${content}"`,
+            html: `<p>${req.user.email} mentioned you in a workspace comment.</p><blockquote>${content}</blockquote>`
+          })
+        )
+      );
     }
 
     req.io?.to(workspaceId).emit("notification:mention", {

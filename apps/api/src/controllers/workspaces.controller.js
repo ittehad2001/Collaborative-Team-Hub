@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma");
 const { logAudit } = require("../services/audit");
+const { sendEmail } = require("../services/mailer");
 
 async function listWorkspaces(req, res) {
   const workspaces = await prisma.workspace.findMany({
@@ -54,6 +55,12 @@ async function inviteMember(req, res) {
     entityType: "member",
     entityId: user.id,
     details: { email: user.email, role: role || "MEMBER" }
+  });
+  await sendEmail({
+    to: user.email,
+    subject: "You've been invited to Team Hub workspace",
+    text: `${req.user.email} invited you to join workspace ${workspaceId} as ${role || "MEMBER"}.`,
+    html: `<p>${req.user.email} invited you to join workspace <strong>${workspaceId}</strong> as <strong>${role || "MEMBER"}</strong>.</p>`
   });
 
   res.json(membership);
