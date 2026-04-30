@@ -65,6 +65,11 @@ export const api = {
   updateItem: (workspaceId, itemId, data) => request(`/api/workspaces/${workspaceId}/items/${itemId}`, { method: "PATCH", body: JSON.stringify(data) }),
   analytics: (workspaceId) => request(`/api/workspaces/${workspaceId}/analytics/dashboard`),
   exportCsv: (workspaceId) => requestNoJson(`/api/workspaces/${workspaceId}/analytics/export`),
+  auditLogs: (workspaceId, query = {}) => {
+    const params = new URLSearchParams(query).toString();
+    return request(`/api/workspaces/${workspaceId}/audit${params ? `?${params}` : ""}`);
+  },
+  exportAuditCsv: (workspaceId) => requestNoJson(`/api/workspaces/${workspaceId}/audit/export`),
   notifications: () => request("/api/notifications"),
   readNotification: (notificationId) => request(`/api/notifications/${notificationId}/read`, { method: "PATCH" })
 };

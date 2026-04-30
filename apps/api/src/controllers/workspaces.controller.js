@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { logAudit } = require("../services/audit");
 
 async function listWorkspaces(req, res) {
   const workspaces = await prisma.workspace.findMany({
@@ -23,6 +24,14 @@ async function createWorkspace(req, res) {
       }
     }
   });
+  await logAudit({
+    workspaceId: workspace.id,
+    userId: req.user.id,
+    action: "workspace.create",
+    entityType: "workspace",
+    entityId: workspace.id,
+    details: { name, description, accentColor }
+  });
   res.status(201).json(workspace);
 }
 
@@ -37,6 +46,14 @@ async function inviteMember(req, res) {
     where: { workspaceId_userId: { workspaceId, userId: user.id } },
     create: { workspaceId, userId: user.id, role: role || "MEMBER" },
     update: { role: role || "MEMBER" }
+  });
+  await logAudit({
+    workspaceId,
+    userId: req.user.id,
+    action: "workspace.invite",
+    entityType: "member",
+    entityId: user.id,
+    details: { email: user.email, role: role || "MEMBER" }
   });
 
   res.json(membership);

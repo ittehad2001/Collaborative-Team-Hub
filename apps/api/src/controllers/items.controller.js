@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { logAudit } = require("../services/audit");
 
 async function listItems(req, res) {
   const { workspaceId } = req.params;
@@ -22,6 +23,14 @@ async function createItem(req, res) {
   });
 
   req.io?.to(workspaceId).emit("item:created", item);
+  await logAudit({
+    workspaceId,
+    userId: req.user.id,
+    action: "item.create",
+    entityType: "action_item",
+    entityId: item.id,
+    details: { title, status: item.status, priority: item.priority, goalId: item.goalId }
+  });
   res.status(201).json(item);
 }
 
@@ -35,6 +44,14 @@ async function updateItem(req, res) {
   });
 
   req.io?.emit("item:status", item);
+  await logAudit({
+    workspaceId: item.workspaceId,
+    userId: req.user.id,
+    action: "item.status.change",
+    entityType: "action_item",
+    entityId: item.id,
+    details: { status: item.status }
+  });
   res.json(item);
 }
 

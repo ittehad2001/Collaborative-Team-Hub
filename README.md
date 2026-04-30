@@ -7,7 +7,7 @@ Monorepo implementation of the internship assignment using **Turborepo**, with:
 
 ## Advanced features chosen
 1. **Optimistic UI** (goal/item/announcement creation and item status update apply instantly with rollback on API failure)
-2. **Advanced RBAC** (workspace membership + role middleware enforces admin/member permissions per route)
+2. **Audit log** (immutable workspace activity timeline with filters and CSV export)
 
 ## Implemented features
 - Email/password register/login
@@ -21,6 +21,7 @@ Monorepo implementation of the internship assignment using **Turborepo**, with:
 - Kanban/list toggle UI
 - Real-time updates + online members via Socket.io
 - Mention notification system: `@email` creates in-app notifications for matched workspace members
+- Audit log timeline with action/entity filters and CSV export
 - Analytics dashboard cards + Recharts pie chart
 - CSV export endpoint for workspace action items
 - Swagger docs at `/api/docs`

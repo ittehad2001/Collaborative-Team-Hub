@@ -11,6 +11,7 @@ import AnnouncementsPanel from "./AnnouncementsPanel";
 import ActionItemsPanel from "./ActionItemsPanel";
 import ProfileAvatarUpload from "./ProfileAvatarUpload";
 import WorkspaceAdminPanel from "./WorkspaceAdminPanel";
+import AuditLogPanel from "./AuditLogPanel";
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
 
@@ -25,6 +26,8 @@ export default function DashboardClient() {
   const [members, setMembers] = useState([]);
   const [online, setOnline] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditFilters, setAuditFilters] = useState({});
   const [error, setError] = useState("");
 
   const socket = useMemo(() => io(SOCKET_URL, { withCredentials: true }), []);
@@ -45,6 +48,8 @@ export default function DashboardClient() {
       setItems(it);
       setNotifications(ntf);
       setMembers(mbr);
+      const logs = await api.auditLogs(id, auditFilters);
+      setAuditLogs(logs);
       setError("");
     } catch (e) {
       setError(e.message);
@@ -79,7 +84,7 @@ export default function DashboardClient() {
       socket.off("item:status");
       socket.disconnect();
     };
-  }, [workspaceId, socket, user]);
+  }, [workspaceId, socket, user, auditFilters]);
 
   async function createGoalOptimistic(payload) {
     const previous = [...goals];
@@ -234,6 +239,24 @@ export default function DashboardClient() {
     }
   }
 
+  async function exportAuditCsv() {
+    if (!workspaceId) return;
+    try {
+      const res = await api.exportAuditCsv(workspaceId);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "workspace-audit-log.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-6">
       <header className="glass flex flex-wrap items-center justify-between gap-4 rounded-2xl p-5 shadow-sm">
@@ -304,6 +327,7 @@ export default function DashboardClient() {
             onCreate={createItemOptimistic}
             onStatus={updateItemStatusOptimistic}
           />
+          <AuditLogPanel logs={auditLogs} onFilterChange={setAuditFilters} onExport={exportAuditCsv} />
         </>
       )}
     </main>

@@ -13,6 +13,7 @@ const announcementRoutes = require("./routes/announcements.routes");
 const itemRoutes = require("./routes/items.routes");
 const analyticsRoutes = require("./routes/analytics.routes");
 const notificationsRoutes = require("./routes/notifications.routes");
+const auditRoutes = require("./routes/audit.routes");
 
 function createApp(io = null) {
   const app = express();
@@ -43,6 +44,7 @@ function createApp(io = null) {
   app.use("/api/workspaces/:workspaceId/announcements", announcementRoutes);
   app.use("/api/workspaces/:workspaceId/items", itemRoutes);
   app.use("/api/workspaces/:workspaceId/analytics", analyticsRoutes);
+  app.use("/api/workspaces/:workspaceId/audit", auditRoutes);
   app.use("/api/notifications", notificationsRoutes);
 
   app.use((req, res) => {

@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { logAudit } = require("../services/audit");
 
 async function listGoals(req, res) {
   const { workspaceId } = req.params;
@@ -23,6 +24,14 @@ async function createGoal(req, res) {
   });
 
   req.io?.to(workspaceId).emit("goal:created", goal);
+  await logAudit({
+    workspaceId,
+    userId: req.user.id,
+    action: "goal.create",
+    entityType: "goal",
+    entityId: goal.id,
+    details: { title: goal.title, status: goal.status, dueDate: goal.dueDate }
+  });
   res.status(201).json(goal);
 }
 
@@ -32,6 +41,17 @@ async function addMilestone(req, res) {
   const milestone = await prisma.milestone.create({
     data: { goalId, title, progress: progress || 0 }
   });
+  const goal = await prisma.goal.findUnique({ where: { id: goalId }, select: { workspaceId: true } });
+  if (goal) {
+    await logAudit({
+      workspaceId: goal.workspaceId,
+      userId: req.user.id,
+      action: "goal.milestone.create",
+      entityType: "milestone",
+      entityId: milestone.id,
+      details: { goalId, title, progress: milestone.progress }
+    });
+  }
   res.status(201).json(milestone);
 }
 
@@ -41,6 +61,17 @@ async function addGoalUpdate(req, res) {
   const update = await prisma.goalUpdate.create({
     data: { goalId, userId: req.user.id, message }
   });
+  const goal = await prisma.goal.findUnique({ where: { id: goalId }, select: { workspaceId: true } });
+  if (goal) {
+    await logAudit({
+      workspaceId: goal.workspaceId,
+      userId: req.user.id,
+      action: "goal.update.post",
+      entityType: "goal_update",
+      entityId: update.id,
+      details: { goalId, message }
+    });
+  }
   res.status(201).json(update);
 }
 

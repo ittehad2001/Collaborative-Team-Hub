@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { logAudit } = require("../services/audit");
 
 function sanitizeRichText(html) {
   if (!html) return "";
@@ -37,6 +38,14 @@ async function createAnnouncement(req, res) {
   });
 
   req.io?.to(workspaceId).emit("announcement:new", data);
+  await logAudit({
+    workspaceId,
+    userId: req.user.id,
+    action: "announcement.create",
+    entityType: "announcement",
+    entityId: data.id,
+    details: { title, pinned: !!pinned }
+  });
   res.status(201).json(data);
 }
 
@@ -56,12 +65,34 @@ async function react(req, res) {
 
   if (existing) {
     await prisma.reaction.delete({ where: { id: existing.id } });
+    const ann = await prisma.announcement.findUnique({ where: { id: announcementId }, select: { workspaceId: true } });
+    if (ann) {
+      await logAudit({
+        workspaceId: ann.workspaceId,
+        userId: req.user.id,
+        action: "announcement.reaction.remove",
+        entityType: "reaction",
+        entityId: existing.id,
+        details: { announcementId, emoji }
+      });
+    }
     return res.json({ action: "removed", emoji });
   }
 
   const reaction = await prisma.reaction.create({
     data: { announcementId, userId: req.user.id, emoji }
   });
+  const ann = await prisma.announcement.findUnique({ where: { id: announcementId }, select: { workspaceId: true } });
+  if (ann) {
+    await logAudit({
+      workspaceId: ann.workspaceId,
+      userId: req.user.id,
+      action: "announcement.reaction.add",
+      entityType: "reaction",
+      entityId: reaction.id,
+      details: { announcementId, emoji }
+    });
+  }
 
   return res.json({ action: "added", reaction });
 }
@@ -76,6 +107,14 @@ async function comment(req, res) {
       userId: req.user.id,
       content
     }
+  });
+  await logAudit({
+    workspaceId,
+    userId: req.user.id,
+    action: "announcement.comment",
+    entityType: "comment",
+    entityId: newComment.id,
+    details: { announcementId, content }
   });
 
   const emails = Array.from(content.matchAll(/@([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g)).map((m) =>
@@ -117,6 +156,20 @@ async function pin(req, res) {
     where: { id: announcementId },
     data: { pinned: !!pinned }
   });
+  const current = await prisma.announcement.findUnique({
+    where: { id: announcementId },
+    select: { workspaceId: true }
+  });
+  if (current) {
+    await logAudit({
+      workspaceId: current.workspaceId,
+      userId: req.user.id,
+      action: pinned ? "announcement.pin" : "announcement.unpin",
+      entityType: "announcement",
+      entityId: announcementId,
+      details: { pinned: !!pinned }
+    });
+  }
   res.json(updated);
 }
 

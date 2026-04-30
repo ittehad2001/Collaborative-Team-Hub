@@ -44,6 +44,7 @@ model User {
   reactions    Reaction[]
   updates      GoalUpdate[]
   notifications Notification[]
+  auditLogs    AuditLog[]
 }
 
 model Workspace {
@@ -56,6 +57,7 @@ model Workspace {
   goals         Goal[]
   announcements Announcement[]
   actionItems   ActionItem[]
+  auditLogs     AuditLog[]
 }
 
 model WorkspaceMembership {
@@ -160,4 +162,17 @@ model ActionItem {
   workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   goal        Goal?      @relation(fields: [goalId], references: [id], onDelete: SetNull)
   assignee    User       @relation(fields: [assigneeId], references: [id])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  workspaceId String
+  userId      String
+  action      String
+  entityType  String
+  entityId    String?
+  details     Json?
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
