@@ -14,61 +14,63 @@ export default function WorkspaceAdminPanel({ onCreateWorkspace, onInviteMember 
   return (
     <section className="panel p-5">
       <h3 className="text-lg font-semibold">Workspace Management</h3>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-4 grid gap-3 md:grid-cols-[1.2fr_1.4fr_auto]">
         <input
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2"
-          placeholder="New workspace name"
+          className="input-field"
+          placeholder="Workspace name"
           value={workspaceName}
           onChange={(e) => setWorkspaceName(e.target.value)}
         />
         <input
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2"
+          className="input-field"
           placeholder="Workspace description"
           value={workspaceDescription}
           onChange={(e) => setWorkspaceDescription(e.target.value)}
         />
-        <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">
-          Accent
-          <input
-            type="color"
-            value={workspaceAccentColor}
-            onChange={(e) => setWorkspaceAccentColor(e.target.value)}
-          />
-        </label>
-        <button
-          className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-2 text-white"
-          onClick={async () => {
-            if (!workspaceName) return;
-            const result = await onCreateWorkspace({
-              name: workspaceName,
-              description: workspaceDescription,
-              accentColor: workspaceAccentColor
-            });
-            if (result?.ok) {
-              setWorkspaceName("");
-              setWorkspaceDescription("");
-              setWorkspaceAccentColor("#2563eb");
-            }
-            setStatus(result?.message || "Workspace action completed");
-            setStatusType(result?.ok ? "success" : "error");
-          }}
-        >
-          Create Workspace
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="input-field flex w-full items-center gap-2 text-sm sm:w-auto">
+            Accent
+            <input
+              type="color"
+              value={workspaceAccentColor}
+              onChange={(e) => setWorkspaceAccentColor(e.target.value)}
+            />
+          </label>
+          <button
+            className="btn-primary w-full px-3 py-2 sm:w-auto"
+            onClick={async () => {
+              if (!workspaceName) return;
+              const result = await onCreateWorkspace({
+                name: workspaceName,
+                description: workspaceDescription,
+                accentColor: workspaceAccentColor
+              });
+              if (result?.ok) {
+                setWorkspaceName("");
+                setWorkspaceDescription("");
+                setWorkspaceAccentColor("#2563eb");
+              }
+              setStatus(result?.message || "Workspace action completed");
+              setStatusType(result?.ok ? "success" : "error");
+            }}
+          >
+            Create
+          </button>
+        </div>
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-4 grid gap-3 md:grid-cols-[1.6fr_0.6fr_auto]">
         <input
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2"
+          className="input-field"
           placeholder="Invite by email"
           value={inviteEmail}
           onChange={(e) => setInviteEmail(e.target.value)}
         />
-        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2" value={role} onChange={(e) => setRole(e.target.value)}>
+        <select className="input-field" value={role} onChange={(e) => setRole(e.target.value)}>
           <option value="MEMBER">Member</option>
           <option value="ADMIN">Admin</option>
         </select>
         <button
-          className="rounded-xl border border-slate-300 bg-white px-3 py-2"
+          className="btn-outline w-full px-3 py-2 sm:w-auto"
           onClick={async () => {
             if (!inviteEmail) return;
             const result = await onInviteMember(inviteEmail, role);

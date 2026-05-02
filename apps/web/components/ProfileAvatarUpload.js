@@ -26,10 +26,10 @@ export default function ProfileAvatarUpload() {
   }
 
   return (
-    <label className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm">
+    <label className="btn-outline flex w-full items-center gap-2 px-3 py-2 text-sm sm:w-auto">
       {uploading ? "Uploading..." : "Upload Avatar"}
       <input className="hidden" type="file" accept="image/*" onChange={handleChange} />
-      {message ? <span className="ml-2 text-xs text-slate-500">{message}</span> : null}
+      {message ? <span className="text-xs text-slate-500">{message}</span> : null}
     </label>
   );
 }

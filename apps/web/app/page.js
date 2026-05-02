@@ -2,45 +2,45 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-12">
-      <section className="glass w-full rounded-3xl p-8 shadow-xl md:p-12">
-        <p className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-500/20 dark:text-blue-200">
-          FredoCloud Team Hub
-        </p>
-        <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight text-slate-900 dark:text-slate-100 md:text-6xl">
-          Collaborate on goals, announcements and action items in real time.
-        </h1>
-        <p className="mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 md:text-lg">
-          Built with Next.js, Express, Prisma and Socket.io in a monorepo. Invite your team, track progress, and stay aligned.
-        </p>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-3 font-semibold text-white shadow-md transition hover:opacity-95"
-            href="/login"
-          >
-            Sign In
-          </Link>
-          <Link
-            className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-            href="/register"
-          >
-            Create Account
-          </Link>
+    <main className="mx-auto min-h-screen w-full max-w-6xl px-6 py-12">
+      <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="fade-up">
+          <p className="text-accent text-sm font-semibold">Sable & Stone</p>
+          <h1 className="font-display mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+            Team collaboration, streamlined.
+          </h1>
+          <p className="text-muted mt-4 max-w-xl text-base md:text-lg">
+            Organize goals, announcements, and action items with real-time updates and clear visibility.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link className="btn-primary px-5 py-3" href="/login">
+              Sign In
+            </Link>
+            <Link className="btn-outline px-5 py-3" href="/register">
+              Create Account
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-3 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-3">
-          <article className="rounded-xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/70">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">Workspace Roles</p>
-            <p className="mt-1">Admin/Member permissions with invites by email.</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/70">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">Live Updates</p>
-            <p className="mt-1">Socket events for goals, announcements and items.</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/70">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">Analytics</p>
-            <p className="mt-1">Completion insights with chart + CSV export.</p>
+        <div className="fade-up stagger-1">
+          <article className="panel p-6">
+            <h2 className="font-display text-2xl font-semibold">Everything your team needs, in one place.</h2>
+            <p className="text-muted mt-2 text-sm">
+              Clean dashboards, instant updates, and focused workflows for daily execution.
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {[
+                { title: "Roles & access", text: "Invite members with clear roles." },
+                { title: "Live updates", text: "Real-time changes across teams." },
+                { title: "Goal tracking", text: "Progress insights and charts." },
+                { title: "Audit trail", text: "Exportable activity history." }
+              ].map((item) => (
+                <div key={item.title} className="glass rounded-2xl p-4">
+                  <p className="font-display text-base font-semibold">{item.title}</p>
+                  <p className="text-muted mt-1 text-sm">{item.text}</p>
+                </div>
+              ))}
+            </div>
           </article>
         </div>
       </section>

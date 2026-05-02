@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuthStore } from "../../store/useAuthStore";
 
 export default function RegisterPage() {
@@ -18,18 +19,35 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md items-center p-6">
-      <div className="glass w-full rounded-2xl p-8 shadow-xl">
-        <p className="text-sm font-medium text-emerald-600">Create account</p>
-        <h1 className="mt-1 text-3xl font-bold">Join your team</h1>
-      <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-        <input className="w-full rounded-xl border border-slate-200 bg-white p-3 outline-none ring-emerald-300 transition focus:ring-2" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-        <input className="w-full rounded-xl border border-slate-200 bg-white p-3 outline-none ring-emerald-300 transition focus:ring-2" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-        <input className="w-full rounded-xl border border-slate-200 bg-white p-3 outline-none ring-emerald-300 transition focus:ring-2" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
-        {error ? <p className="text-sm text-red-500">{error}</p> : null}
-        <button disabled={loading} className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-3 font-medium text-white shadow-md">{loading ? "Loading..." : "Create account"}</button>
-      </form>
-      </div>
+    <main className="auth-shell">
+      <section className="auth-split panel grid md:grid-cols-2">
+        <div className="auth-visual order-2 md:order-1">
+          <div className="auth-visual-content">
+            <p className="text-sm font-semibold">Collaborative Team Hub</p>
+            <h2 className="font-display mt-2 text-2xl font-semibold">Start a workspace that feels effortless.</h2>
+            <p className="text-muted mt-2 text-sm">
+              Invite your team, set goals, and move faster with real-time updates.
+            </p>
+          </div>
+        </div>
+        <div className="auth-form order-1 md:order-2">
+          <p className="text-accent text-sm font-semibold">Create account</p>
+          <h1 className="font-display mt-3 text-3xl font-semibold">Join your team</h1>
+          <p className="text-muted mt-2 text-sm">Create your login in seconds.</p>
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+            <input className="input-field" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+            <input className="input-field" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+            <input className="input-field" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
+            {error ? <p className="text-sm text-red-500">{error}</p> : null}
+            <button disabled={loading} className="btn-primary w-full px-4 py-3">
+              {loading ? "Loading..." : "Create account"}
+            </button>
+          </form>
+          <p className="text-muted mt-4 text-sm">
+            Already have an account? <Link className="text-blue-600" href="/login">Sign in</Link>
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

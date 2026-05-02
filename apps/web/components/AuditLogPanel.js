@@ -17,13 +17,13 @@ export default function AuditLogPanel({ logs = [], onFilterChange, onExport }) {
     <section className="panel p-5">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-lg font-semibold">Audit Timeline</h3>
-        <button className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm" onClick={onExport}>
+        <button className="btn-outline px-3 py-2 text-sm" onClick={onExport}>
           Export Audit CSV
         </button>
       </div>
       <div className="mb-3 flex flex-wrap gap-2">
         <select
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+          className="input-field w-full text-sm sm:w-auto"
           value={action}
           onChange={(e) => {
             const value = e.target.value;
@@ -39,7 +39,7 @@ export default function AuditLogPanel({ logs = [], onFilterChange, onExport }) {
           ))}
         </select>
         <select
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+          className="input-field w-full text-sm sm:w-auto"
           value={entityType}
           onChange={(e) => {
             const value = e.target.value;

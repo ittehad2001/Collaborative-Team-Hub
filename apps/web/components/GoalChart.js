@@ -1,8 +1,8 @@
 "use client";
 
-import { PieChart, Pie, Tooltip, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 
-const colors = { not_started: "#94a3b8", in_progress: "#3b82f6", done: "#22c55e" };
+const colors = { not_started: "#94a3b8", in_progress: "#60a5fa", done: "#22c55e" };
 
 export default function GoalChart({ chart = [] }) {
   const grouped = chart.reduce((acc, item) => {
@@ -14,14 +14,16 @@ export default function GoalChart({ chart = [] }) {
 
   return (
     <div className="panel p-5">
-      <h3 className="mb-2 text-lg font-semibold">Goal Completion</h3>
-      <div className="flex justify-center">
-        <PieChart width={320} height={220}>
-          <Pie data={data} dataKey="value" nameKey="name" outerRadius={80}>
-            {data.map((entry) => <Cell key={entry.name} fill={colors[entry.name] || "#64748b"} />)}
-          </Pie>
-          <Tooltip />
-        </PieChart>
+      <h3 className="mb-2 text-lg font-semibold">Goal completion</h3>
+      <div className="h-56 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie data={data} dataKey="value" nameKey="name" outerRadius={70}>
+              {data.map((entry) => <Cell key={entry.name} fill={colors[entry.name] || "#64748b"} />)}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

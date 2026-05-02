@@ -17,6 +17,7 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000"
 
 export default function DashboardClient() {
   const { user, logout } = useAuthStore();
+  const [theme, setTheme] = useState("system");
   const [workspaces, setWorkspaces] = useState([]);
   const [workspaceId, setWorkspaceId] = useState("");
   const [analytics, setAnalytics] = useState(null);
@@ -29,6 +30,7 @@ export default function DashboardClient() {
   const [auditLogs, setAuditLogs] = useState([]);
   const [auditFilters, setAuditFilters] = useState({});
   const [error, setError] = useState("");
+  const [actionsOpen, setActionsOpen] = useState(false);
 
   const socket = useMemo(() => io(SOCKET_URL, { withCredentials: true }), []);
 
@@ -63,6 +65,11 @@ export default function DashboardClient() {
         if (data.length > 0) setWorkspaceId(data[0].id);
       })
       .catch((e) => setError(e.message));
+  }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("teamhub-theme") || "system";
+    setTheme(stored);
   }, []);
 
   useEffect(() => {
@@ -257,27 +264,74 @@ export default function DashboardClient() {
     }
   }
 
+  function applyTheme(nextTheme) {
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    if (nextTheme === "system") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.classList.add(prefersDark ? "dark" : "light");
+    } else {
+      root.classList.add(nextTheme);
+    }
+    localStorage.setItem("teamhub-theme", nextTheme);
+    setTheme(nextTheme);
+  }
+
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-6">
-      <header className="glass flex flex-wrap items-center justify-between gap-4 rounded-2xl p-5 shadow-sm">
+      <header className="panel flex flex-wrap items-center justify-between gap-4 p-5">
         <div>
-          <h1 className="text-2xl font-bold">Team Hub Dashboard</h1>
-          <p className="text-sm text-slate-500">Online members: {online.length}</p>
+          <p className="text-accent text-xs font-semibold uppercase tracking-[0.2em]">Sable & Stone</p>
+          <h1 className="font-display mt-2 text-2xl font-semibold">Workspace overview</h1>
+          <p className="text-muted text-sm">Online members: {online.length}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <ProfileAvatarUpload />
-          <button className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition hover:bg-slate-50" onClick={exportWorkspaceCsv}>
-            Export CSV
+        <div className="relative">
+          <button
+            className="btn-primary px-4 py-2 text-sm"
+            onClick={() => setActionsOpen((prev) => !prev)}
+          >
+            Actions
           </button>
-          <select className="rounded-xl border border-slate-200 bg-white px-3 py-2" value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)}>
-            {workspaces.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
-          </select>
-          <button className="rounded-xl border border-slate-300 bg-white px-3 py-2 transition hover:bg-slate-50" onClick={logout}>Logout</button>
+          {actionsOpen ? (
+            <div className="panel absolute right-0 top-12 z-20 w-72 space-y-3 p-4">
+              <ProfileAvatarUpload />
+              <div className="rounded-xl border border-slate-200 p-2">
+                <p className="text-xs font-semibold text-slate-500">Theme</p>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <button
+                    className={`btn-ghost px-3 py-2 text-xs ${theme === "light" ? "bg-blue-600 text-white" : ""}`}
+                    onClick={() => applyTheme("light")}
+                  >
+                    Light
+                  </button>
+                  <button
+                    className={`btn-ghost px-3 py-2 text-xs ${theme === "dark" ? "bg-blue-600 text-white" : ""}`}
+                    onClick={() => applyTheme("dark")}
+                  >
+                    Dark
+                  </button>
+                </div>
+              </div>
+              <button className="btn-outline w-full px-3 py-2 text-sm" onClick={exportWorkspaceCsv}>
+                Export CSV
+              </button>
+              <select
+                className="input-field w-full px-3 py-2 text-sm"
+                value={workspaceId}
+                onChange={(e) => setWorkspaceId(e.target.value)}
+              >
+                {workspaces.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+              </select>
+              <button className="btn-ghost w-full px-3 py-2 text-sm" onClick={logout}>
+                Logout
+              </button>
+            </div>
+          ) : null}
         </div>
       </header>
 
       <WorkspaceAdminPanel onCreateWorkspace={createWorkspace} onInviteMember={inviteMember} />
-      {error ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
       {notifications.length > 0 ? (
         <section className="panel p-4">
           <h4 className="font-semibold">Notifications</h4>

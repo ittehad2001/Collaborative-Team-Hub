@@ -37,14 +37,27 @@ export default function ActionItemsPanel({ items = [], members = [], goals = [],
 
   return (
     <section className="panel p-5">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-lg font-semibold">Action Items</h3>
-        <button className="rounded-xl border border-slate-300 bg-white px-3 py-1 text-sm" onClick={() => setView(view === "kanban" ? "list" : "kanban")}>{view === "kanban" ? "List View" : "Kanban View"}</button>
+        <div className="flex items-center gap-2">
+          <button
+            className={`btn-ghost w-full px-3 py-1 text-sm sm:w-auto ${view === "list" ? "bg-blue-600 text-white" : ""}`}
+            onClick={() => setView("list")}
+          >
+            List
+          </button>
+          <button
+            className={`btn-ghost w-full px-3 py-1 text-sm sm:w-auto ${view === "kanban" ? "bg-blue-600 text-white" : ""}`}
+            onClick={() => setView("kanban")}
+          >
+            Kanban
+          </button>
+        </div>
       </div>
 
       <form className="mb-4 grid grid-cols-1 gap-2 md:grid-cols-3" onSubmit={submit}>
-        <input className="rounded-xl border border-slate-200 bg-white px-3 py-2 md:col-span-3" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="New action item" />
-        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)}>
+        <input className="input-field md:col-span-3" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Action item title" />
+        <select className="input-field text-sm" value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)}>
           <option value="">Assign to (default: me)</option>
           {members.map((m) => (
             <option key={m.id} value={m.id}>
@@ -52,18 +65,18 @@ export default function ActionItemsPanel({ items = [], members = [], goals = [],
             </option>
           ))}
         </select>
-        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" value={priority} onChange={(e) => setPriority(e.target.value)}>
+        <select className="input-field text-sm" value={priority} onChange={(e) => setPriority(e.target.value)}>
           <option value="low">low</option>
           <option value="medium">medium</option>
           <option value="high">high</option>
         </select>
-        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select className="input-field text-sm" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="todo">todo</option>
           <option value="in_progress">in_progress</option>
           <option value="done">done</option>
         </select>
-        <input type="date" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" value={goalId} onChange={(e) => setGoalId(e.target.value)}>
+        <input type="date" className="input-field text-sm" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+        <select className="input-field text-sm" value={goalId} onChange={(e) => setGoalId(e.target.value)}>
           <option value="">Link parent goal (optional)</option>
           {goals.map((g) => (
             <option key={g.id} value={g.id}>
@@ -71,7 +84,7 @@ export default function ActionItemsPanel({ items = [], members = [], goals = [],
             </option>
           ))}
         </select>
-        <button className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-500 px-3 py-2 text-white">Add</button>
+        <button className="btn-primary px-3 py-2">Add item</button>
       </form>
 
       {view === "kanban" ? (
@@ -81,11 +94,11 @@ export default function ActionItemsPanel({ items = [], members = [], goals = [],
               <h4 className="mb-2 text-sm font-semibold capitalize text-slate-700">{status.replace("_", " ")}</h4>
               <div className="space-y-2">
                 {list.map((item) => (
-                  <article key={item.id} className="rounded-lg bg-slate-50 p-2">
+                  <article key={item.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
                     <p className="text-sm font-medium">{item.title}</p>
-                    <p className="text-xs text-slate-500">priority: {item.priority}</p>
-                    <p className="text-xs text-slate-500">due: {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "n/a"}</p>
-                    <select className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-1 text-sm" value={item.status} onChange={(e) => onStatus(item.id, e.target.value)}>
+                    <p className="text-xs text-slate-500">Priority: {item.priority}</p>
+                    <p className="text-xs text-slate-500">Due: {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "n/a"}</p>
+                    <select className="input-field mt-2 w-full text-sm" value={item.status} onChange={(e) => onStatus(item.id, e.target.value)}>
                       <option value="todo">todo</option>
                       <option value="in_progress">in_progress</option>
                       <option value="done">done</option>
@@ -99,8 +112,16 @@ export default function ActionItemsPanel({ items = [], members = [], goals = [],
       ) : (
         <ul className="space-y-2">
           {items.map((item) => (
-            <li key={item.id} className="rounded-xl border border-slate-200 bg-white p-2">
-              {item.title} - {item.status} ({item.priority})
+            <li key={item.id} className="rounded-xl border border-slate-200 bg-white p-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.title}</p>
+                  <p className="text-xs text-slate-500">Priority: {item.priority}</p>
+                </div>
+                <span className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold capitalize text-slate-600">
+                  {item.status.replace("_", " ")}
+                </span>
+              </div>
             </li>
           ))}
         </ul>

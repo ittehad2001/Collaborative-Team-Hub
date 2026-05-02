@@ -76,24 +76,13 @@ export default function AppChromeClient({ children }) {
 
   return (
     <>
-      <div className="fixed right-4 top-4 z-40">
-        <select
-          className="rounded-xl border border-slate-300 bg-white px-2 py-1 text-xs dark:bg-slate-900 dark:text-slate-100"
-          value={theme}
-          onChange={(e) => onThemeChange(e.target.value)}
-        >
-          <option value="system">System</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </div>
       {children}
       {open ? (
         <div className="fixed inset-0 z-50 bg-black/40 p-6">
-          <div className="mx-auto max-w-xl rounded-2xl bg-white p-4 shadow-xl dark:bg-slate-900">
+          <div className="panel mx-auto max-w-xl p-4">
             <input
               autoFocus
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+              className="input-field text-sm"
               placeholder="Type route name..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -102,7 +91,7 @@ export default function AppChromeClient({ children }) {
               {filtered.map((item) => (
                 <li key={item.href}>
                   <button
-                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-left text-sm hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                    className="btn-ghost w-full px-3 py-2 text-left text-sm"
                     onClick={() => {
                       router.push(item.href);
                       setOpen(false);
