@@ -16,11 +16,20 @@ async function uploadAvatar(req, res) {
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
   const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-  const uploaded = await cloudinary.uploader.upload(base64, { folder: "teamhub/avatars" });
+  let avatarUrl = base64;
+
+  if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+    try {
+      const uploaded = await cloudinary.uploader.upload(base64, { folder: "teamhub/avatars" });
+      avatarUrl = uploaded.secure_url;
+    } catch (error) {
+      console.warn("Avatar upload fell back to local data URL:", error.message);
+    }
+  }
 
   const user = await prisma.user.update({
     where: { id: req.user.id },
-    data: { avatarUrl: uploaded.secure_url }
+    data: { avatarUrl }
   });
 
   res.json({ avatarUrl: user.avatarUrl });

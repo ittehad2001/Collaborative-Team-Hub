@@ -280,10 +280,23 @@ export default function DashboardClient() {
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-6">
       <header className="panel flex flex-wrap items-center justify-between gap-4 p-5">
-        <div>
-          <p className="text-accent text-xs font-semibold uppercase tracking-[0.2em]">Sable & Stone</p>
-          <h1 className="font-display mt-2 text-2xl font-semibold">Workspace overview</h1>
-          <p className="text-muted text-sm">Online members: {online.length}</p>
+        <div className="flex items-center gap-4">
+          {user?.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name || "Avatar"}
+              className="h-12 w-12 rounded-full border border-slate-200 object-cover"
+            />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-blue-100 text-sm font-semibold text-blue-600">
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+          )}
+          <div>
+            <p className="text-accent text-xs font-semibold uppercase tracking-[0.2em]">Sable & Stone</p>
+            <h1 className="font-display mt-2 text-2xl font-semibold">Workspace overview</h1>
+            <p className="text-muted text-sm">Online members: {online.length}</p>
+          </div>
         </div>
         <div className="relative">
           <button

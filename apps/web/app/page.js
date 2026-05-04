@@ -1,6 +1,37 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ThemeModeButton from "../components/ThemeModeButton";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function HomePage() {
+  const router = useRouter();
+  const { user, initialized, bootstrap } = useAuthStore();
+  const [redirecting, setRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (!initialized) {
+      bootstrap();
+    }
+  }, [initialized, bootstrap]);
+
+  useEffect(() => {
+    if (initialized && user && !redirecting) {
+      setRedirecting(true);
+      router.replace("/dashboard");
+    }
+  }, [initialized, user, router, redirecting]);
+
+  if (!initialized || redirecting) {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading...</p>
+      </main>
+    );
+  }
+
   const highlights = [
     { value: "24/7", label: "team visibility" },
     { value: "3x", label: "faster updates" },
@@ -54,6 +85,7 @@ export default function HomePage() {
 
   return (
     <main className="relative overflow-hidden">
+      <ThemeModeButton />
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-[-8rem] top-[-6rem] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.18),transparent_70%)] blur-2xl" />
         <div className="absolute right-[-6rem] top-[8rem] h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(96,165,250,0.16),transparent_72%)] blur-2xl" />
