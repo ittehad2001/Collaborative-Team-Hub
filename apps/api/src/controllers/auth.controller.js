@@ -7,6 +7,7 @@ function cookieOptions(maxAge) {
     httpOnly: true,
     sameSite: "lax",
     secure: false,
+    path: "/",
     maxAge
   };
 }
@@ -18,7 +19,11 @@ async function register(req, res) {
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({ data: { email, name, passwordHash } });
-  return res.status(201).json({ id: user.id, email: user.email, name: user.name });
+  const payload = { id: user.id, email: user.email };
+  res.cookie("accessToken", createAccessToken(payload), cookieOptions(15 * 60 * 1000));
+  res.cookie("refreshToken", createRefreshToken(payload), cookieOptions(7 * 24 * 60 * 60 * 1000));
+
+  return res.status(201).json({ user: payload });
 }
 
 async function login(req, res) {
@@ -37,8 +42,8 @@ async function login(req, res) {
 }
 
 function logout(req, res) {
-  res.clearCookie("accessToken");
-  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken", { path: "/" });
+  res.clearCookie("refreshToken", { path: "/" });
   return res.json({ success: true });
 }
 

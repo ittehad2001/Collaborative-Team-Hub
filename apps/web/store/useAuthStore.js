@@ -12,7 +12,7 @@ export const useAuthStore = create((set) => ({
     set({ loading: true, error: "" });
     try {
       const data = await api.login({ email, password });
-      set({ user: data.user, loading: false });
+      set({ user: data.user, initialized: true, loading: false });
       return true;
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -22,8 +22,8 @@ export const useAuthStore = create((set) => ({
   register: async (name, email, password) => {
     set({ loading: true, error: "" });
     try {
-      await api.register({ name, email, password });
-      set({ loading: false });
+      const data = await api.register({ name, email, password });
+      set({ user: data.user, initialized: true, loading: false });
       return true;
     } catch (error) {
       set({ error: error.message, loading: false });

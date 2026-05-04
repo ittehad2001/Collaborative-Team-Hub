@@ -2,8 +2,8 @@ import "./globals.css";
 import { Manrope, Sora } from "next/font/google";
 import AppChromeClient from "../components/AppChromeClient";
 
-const displayFont = Sora({ subsets: ["latin"], variable: "--font-display" });
-const bodyFont = Manrope({ subsets: ["latin"], variable: "--font-body" });
+const displayFont = Sora({ subsets: ["latin"], variable: "--font-display", preload: false });
+const bodyFont = Manrope({ subsets: ["latin"], variable: "--font-body", preload: false });
 
 export const metadata = {
   title: "Sable & Stone",

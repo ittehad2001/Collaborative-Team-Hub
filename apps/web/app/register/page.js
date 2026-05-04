@@ -15,7 +15,7 @@ export default function RegisterPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     const ok = await register(name, email, password);
-    if (ok) router.push("/login");
+    if (ok) router.push("/dashboard");
   }
 
   return (

@@ -9,8 +9,8 @@ export default function AuthGuard({ children }) {
   const { user, initialized, bootstrap } = useAuthStore();
 
   useEffect(() => {
-    bootstrap();
-  }, [bootstrap]);
+    if (!initialized) bootstrap();
+  }, [bootstrap, initialized]);
 
   useEffect(() => {
     if (initialized && user === null) router.push("/login");
